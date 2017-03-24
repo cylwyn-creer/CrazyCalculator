@@ -38,6 +38,7 @@ public class Frame extends JFrame{
 	private String input = "";
 	private String[] symbols = {"(", ")", "AC", "C", "7", "8", "9", "+", "4", "5", "6", "-", "1", "2", "3", "*", "0", ".", "=", "/"};
 	private int inputSize = 0;
+	private boolean proceed = true;
 	
 	private JLabel header = new JLabel("Data Structure");
 	private JLabel postfixL = new JLabel("Postfix");
@@ -46,8 +47,11 @@ public class Frame extends JFrame{
 	private final JTextField postfixTF = new JTextField(100);
 	private JScrollBar scroll = new JScrollBar(JScrollBar.HORIZONTAL);
 	
-	private JPanel postfixPanel = new JPanel(new GridLayout(20, 1));
-	private JLabel[] postfixItem = new JLabel[20];
+	private JPanel postfixPanel1 = new JPanel(new GridLayout(20, 1));
+	private JPanel postfixPanel2 = new JPanel(new GridLayout(20, 1));
+	private JPanel postfixPanel3 = new JPanel(new GridLayout(20, 1));
+	
+	private JLabel[] postfixItem = new JLabel[60];
 	
 	public Frame() {
 		super("Crazy Calculator");
@@ -88,14 +92,27 @@ public class Frame extends JFrame{
 		header.setFont(new Font("Courier New", Font.BOLD, 20));
 		dataStructPanel.add(header);
 		
-		dataStructPanel.add(postfixPanel);
-		postfixPanel.setBounds(0, 60, 75, 340);
+		postfixPanel1.setBounds(0, 60, 75, 340);
+		postfixPanel2.setBounds(80, 60, 75, 340);
+		postfixPanel3.setBounds(160, 60, 75, 340);
+		dataStructPanel.add(postfixPanel1);
+		dataStructPanel.add(postfixPanel2);
+		dataStructPanel.add(postfixPanel3);
 		
 		for(int a = 0; a < postfixItem.length; a++) {
 			postfixItem[a] = new JLabel("" ,SwingConstants.CENTER);
 			postfixItem[a].setFont(new Font("Courier New", Font.BOLD, 15));
 			postfixItem[a].setBorder(BorderFactory.createLineBorder(Color.CYAN));
-			postfixPanel.add(postfixItem[a]);
+			
+			if(a >= 0 && a < 20) {
+				postfixPanel1.add(postfixItem[a]);
+			}
+			else if(a >= 20 && a < 40) {
+				postfixPanel2.add(postfixItem[a]);
+			}
+			else {
+				postfixPanel3.add(postfixItem[a]);
+			}
 		}
 		
 		postfixL.setBounds(0, 400, 70, 20);
@@ -133,23 +150,28 @@ public class Frame extends JFrame{
 		inputTF.setBorder(BorderFactory.createEmptyBorder());
 		inputTF.addActionListener( new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				input = inputTF.getText();
-				inputSize = input.length();
+				if(proceed) {
+					input = inputTF.getText();
+					inputSize = input.length();
 				
-				String inputCopy = addSeparator(input);
+					String inputCopy = addSeparator(input);
 				
-				boolean correct = false;
-				correct = checkSyntax(inputCopy);
-				System.out.println(inputCopy);
+					boolean correct = false;
+					correct = checkSyntax(inputCopy);
+					System.out.println(inputCopy);
 				
-				String postfix = "";
-				if(correct) {
-					System.out.println(input);
-					compute(input);
-				} else {
-					postfix = "Syntax error";
-					System.out.println(input);
-					outputTF.setText(postfix);
+					String postfix = "";
+					if(correct) {
+						proceed = false;
+						inputTF.setEditable(false);
+						inputTF.setFocusable(false);
+						System.out.println(input);
+						compute(input);
+					} else {
+						postfix = "Syntax error";
+						System.out.println(input);
+						outputTF.setText(postfix);
+					}
 				}
 			}
 		});
@@ -197,31 +219,33 @@ public class Frame extends JFrame{
 				
 			} else
 			if(button == "=") {
+				if(proceed) {
+					input = inputTF.getText();
+					inputSize = input.length();
 				
-				input = inputTF.getText();
-				inputSize = input.length();
+					String inputCopy = addSeparator(input);
 				
-				String inputCopy = addSeparator(input);
+					boolean correct = false;
 				
-				boolean correct = false;
+					correct = checkSyntax(inputCopy);
 				
-				correct = checkSyntax(inputCopy);
+					System.out.println(inputCopy);
 				
-				System.out.println(inputCopy);
+					String postfix = "";
 				
-				String postfix = "";
-				
-				if(correct) {
+					if(correct) {
+						proceed = false;
+						inputTF.setEditable(false);
+						inputTF.setFocusable(false);
+						System.out.println(input);
+						compute(input);
 					
-					System.out.println(input);
-					compute(input);
+					} else {
 					
-				} else {
-					
-					postfix = "Syntax error";
-					System.out.println(input);
-					outputTF.setText(postfix);
-					
+						postfix = "Syntax error";
+						System.out.println(input);
+						outputTF.setText(postfix);
+					}
 				}
 				
 			} else {
@@ -354,11 +378,13 @@ public class Frame extends JFrame{
 								stack.push(character);
 								
 								postfixItem[index].setText(String.valueOf(stack.displayItemAt(stack.size() - 1)));
+								//pushColor(index, stack);
 								index--;
 								Thread.sleep(500);
 							}
 							else if(character == ')') {
 								while(!stack.isEmpty()) {
+									//popColor(index, stack);
 									char top = stack.pop();
 									
 									postfixItem[index + 1].setText(null);
@@ -380,6 +406,7 @@ public class Frame extends JFrame{
 								Thread.sleep(500);
 								
 								while(!stack.isEmpty()) {
+									//popColor(index, stack);
 									char top = stack.pop();
 									
 									postfixItem[index + 1].setText(null);
@@ -390,6 +417,7 @@ public class Frame extends JFrame{
 										stack.push(top);
 
 										postfixItem[index].setText(String.valueOf(stack.displayItemAt(stack.size() - 1)));
+										//pushColor(index, stack);
 										index--;
 										Thread.sleep(500);
 										
@@ -399,6 +427,7 @@ public class Frame extends JFrame{
 											stack.push(top);
 											
 											postfixItem[index].setText(String.valueOf(stack.displayItemAt(stack.size() - 1)));
+											//pushColor(index, stack);
 											index--;
 											Thread.sleep(500);
 											break;
@@ -413,6 +442,7 @@ public class Frame extends JFrame{
 								stack.push(character);
 								
 								postfixItem[index].setText(String.valueOf(stack.displayItemAt(stack.size() - 1)));
+								//pushColor(index, stack);
 								index--;
 								Thread.sleep(500);
 							}
@@ -423,6 +453,7 @@ public class Frame extends JFrame{
 					Thread.sleep(500);
 					
 					while(!stack.isEmpty()) {
+						//popColor(index, stack);
 						output = output + ' ' + stack.pop();
 						
 						postfixTF.setText(output);
@@ -433,7 +464,19 @@ public class Frame extends JFrame{
 						Thread.sleep(500);
 					}
 					System.out.println(output);
-					outputTF.setText(evaluatePostfix(output));
+					
+					String result = evaluatePostfix(output);
+					
+					if(Double.parseDouble(result) >= -9999999.999999999 && Double.parseDouble(result) <= 9999999.99999999) {
+						outputTF.setText(result);
+					}
+					else {
+						outputTF.setText("Unsupported Output");
+					}
+					
+					proceed = true;
+					inputTF.setEditable(true);
+					inputTF.setFocusable(true);
 				}
 				catch(InterruptedException e) {
 					e.printStackTrace();
@@ -442,12 +485,42 @@ public class Frame extends JFrame{
 		};
 		thread.start();
 	}
+	/*
+	public void pushColor(int index, Stack<Character> stack) {
+		if(stack.size() == 1) {
+			postfixItem[stack.size() - 1].setForeground(new Color(255, 0, 0));
+		}
+		else if(stack.size() == 2) {
+			postfixItem[index].setForeground(new Color(255, 0, 0));
+			postfixItem[stack.size() - 1].setForeground(new Color(0, 0, 255));
+		}
+		else {
+			postfixItem[index].setForeground(new Color(255, 0, 0));
+			postfixItem[index + 1].setForeground(null);
+			postfixItem[stack.size() - 1].setForeground(new Color(0, 0, 255));
+		}
+	}
 	
+	public void popColor(int index, Stack<Character> stack) {
+		if(stack.size() == 1) {
+			postfixItem[stack.size() - 1].setBackground(new Color(0, 0, 0));
+		}
+		else if(stack.size() == 2) {
+			postfixItem[index].setBackground(new Color(0, 0, 0));
+			postfixItem[stack.size() - 1].setBackground(new Color(255, 0, 0));
+		}
+		else {
+			postfixItem[index].setBackground(null);
+			postfixItem[index + 1].setBackground(new Color(255, 0, 0));
+			postfixItem[stack.size() - 1].setBackground(new Color(0, 0, 255));
+		}
+	}
+	*/
 	public String evaluatePostfix(String postfix) {
 		
 		String answer = "";
-		Stack<String> expression = new Stack<String>(100);
-		Stack<Double> temporaryAnswer = new Stack<Double>(100);
+		Stack<String> expression = new Stack<String>(postfix.length());
+		Stack<Double> temporaryAnswer = new Stack<Double>(postfix.length());
 		
 		String[] terms = postfix.split(" ");
 		
@@ -533,31 +606,33 @@ public class Frame extends JFrame{
 				
 			} else 
 			if(event.getKeyChar() == '=') {
+				if(proceed) {
+					input = inputTF.getText();
+					inputSize = input.length();
 				
-				input = inputTF.getText();
-				inputSize = input.length();
+					String inputCopy = addSeparator(input);
 				
-				String inputCopy = addSeparator(input);
+					boolean correct = false;
 				
-				boolean correct = false;
+					correct = checkSyntax(inputCopy);
 				
-				correct = checkSyntax(inputCopy);
+					System.out.println(inputCopy);
 				
-				System.out.println(inputCopy);
+					String postfix = "";
 				
-				String postfix = "";
-				
-				if(correct) {
+					if(correct) {
+						proceed = false;
+						inputTF.setEditable(false);
+						inputTF.setFocusable(false);
+						System.out.println(input);
+						compute(input);
 					
-					System.out.println(input);
-					compute(input);
+					} else {
 					
-				} else {
-					
-					postfix = "Syntax error";
-					System.out.println(input);
-					outputTF.setText(postfix);
-					
+						postfix = "Syntax error";
+						System.out.println(input);
+						outputTF.setText(postfix);
+					}
 				}
 				
 				event.consume();
