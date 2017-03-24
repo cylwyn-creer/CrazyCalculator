@@ -14,12 +14,6 @@ public class Main {
 	
 	public static void main(String[] args) {
 		new Main();
-<<<<<<< HEAD
-=======
-		
-		System.out.println("Testing...");
-		System.out.println("Rodney dublin");
->>>>>>> refs/remotes/origin/master
 	}
 
 }
