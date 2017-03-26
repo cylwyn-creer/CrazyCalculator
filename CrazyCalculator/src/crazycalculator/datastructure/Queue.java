@@ -96,4 +96,22 @@ public class Queue<T> {
 	public T displayItemAt(int index) {
 		return pseudoArray.get(index);
 	}
+	
+	public String displayContents() {
+		String contents = " ";
+		
+		for(int a = 0; a < size; a++) {
+			contents = contents + pseudoArray.get(a) + " ";
+		}
+		
+		return contents;
+	}
+	
+	public String displayPseudoArray() {
+		return pseudoArray.displayContents();
+	}
+	
+	public String displayLinkedList() {
+		return pseudoArray.displayLinkedList();
+	}
 }

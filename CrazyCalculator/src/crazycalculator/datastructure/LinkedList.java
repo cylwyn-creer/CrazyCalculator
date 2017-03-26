@@ -183,4 +183,19 @@ public class LinkedList<T> {
 		
 		size--;
 	}
+	
+	public String displayContents() {
+		String contents = "";
+		
+		Link<T> currentLink = firstLink;
+		int index = 0;
+		while(currentLink.getData() != null) {
+			contents = contents + "[ " + index + " ]\t= " + currentLink.getData() + "\n";
+			index++;
+			
+			currentLink = currentLink.getNextLink();
+		}
+		
+		return contents;
+	}
 }

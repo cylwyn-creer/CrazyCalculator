@@ -80,4 +80,16 @@ public class Stack<T> {
 	public T displayItemAt(int index) {
 		return queue.displayItemAt(index);
 	}
+	
+	public String displayQueue() {
+		return queue.displayContents();
+	}
+	
+	public String displayPseudoArray() {
+		return queue.displayPseudoArray();
+	}
+	
+	public String displayLinkedList() {
+		return queue.displayLinkedList();
+	}
 }

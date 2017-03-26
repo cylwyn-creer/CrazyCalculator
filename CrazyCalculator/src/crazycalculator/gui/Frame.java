@@ -15,6 +15,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -40,18 +42,27 @@ public class Frame extends JFrame{
 	private int inputSize = 0;
 	private boolean proceed = true;
 	
-	private JLabel header = new JLabel("Data Structure");
+	private JLabel header = new JLabel("Data Structures", SwingConstants.CENTER);
 	private JLabel postfixL = new JLabel("Postfix");
 	private JLabel stackL = new JLabel("Stack");
 	
 	private final JTextField postfixTF = new JTextField(100);
-	private JScrollBar scroll = new JScrollBar(JScrollBar.HORIZONTAL);
 	
 	private JPanel postfixPanel1 = new JPanel(new GridLayout(20, 1));
 	private JPanel postfixPanel2 = new JPanel(new GridLayout(20, 1));
 	private JPanel postfixPanel3 = new JPanel(new GridLayout(20, 1));
 	
 	private JLabel[] postfixItem = new JLabel[60];
+	
+	private JLabel queueL = new JLabel("Queue");
+	private JLabel pseudoArrayL = new JLabel("Pseudo Array");
+	private JLabel linkedListL = new JLabel("Linked List");
+	
+	private JTextField queue = new JTextField();
+	private JTextArea pseudoArray = new JTextArea();
+	private JScrollPane scrollP1;
+	private JTextArea linkedList = new JTextArea();
+	private JScrollPane scrollP2;
 	
 	public Frame() {
 		super("Crazy Calculator");
@@ -75,7 +86,7 @@ public class Frame extends JFrame{
 		calculatorPanel.add(textPanel);
 		
 		setLayout(null);
-		setSize(640,520);
+		setSize(960,520);
 		setVisible(true);
 		setResizable(false);
 		setLocationRelativeTo(null);
@@ -85,10 +96,10 @@ public class Frame extends JFrame{
 	public void setComponents() {
 		calculatorPanel.setBounds(0, 0, 320, 520);
 		calculatorPanel.setLayout(null);
-		dataStructPanel.setBounds(320, 0, 320, 520);
+		dataStructPanel.setBounds(320, 0, 640, 520);
 		dataStructPanel.setLayout(null);
 		
-		header.setBounds(0, 0, 320, 25);
+		header.setBounds(0, 0, 640, 25);
 		header.setFont(new Font("Courier New", Font.BOLD, 20));
 		dataStructPanel.add(header);
 		
@@ -123,7 +134,34 @@ public class Frame extends JFrame{
 		stackL.setFont(new Font("Courier New", Font.BOLD, 15));
 		dataStructPanel.add(stackL);
 		
-		postfixTF.setBounds(0, 420, 300, 30);
+		queueL.setBounds(245, 30, 75, 20);
+		queueL.setFont(new Font("Courier New", Font.BOLD, 15));
+		dataStructPanel.add(queueL);
+		
+		pseudoArrayL.setBounds(245, 120, 180, 20);
+		pseudoArrayL.setFont(new Font("Courier New", Font.BOLD, 15));
+		dataStructPanel.add(pseudoArrayL);
+		
+		linkedListL.setBounds(440, 120, 180, 20);
+		linkedListL.setFont(new Font("Courier New", Font.BOLD, 15));
+		dataStructPanel.add(linkedListL);
+		
+		queue.setBounds(245 , 60, 375, 30);
+		queue.setEditable(false);
+		queue.setBorder(BorderFactory.createLineBorder(Color.CYAN));
+		queue.setFont(new Font("Courier New", Font.BOLD, 15));
+		dataStructPanel.add(queue);
+		
+		JScrollBar scroll = new JScrollBar(JScrollBar.HORIZONTAL);
+		
+		JScrollBar queueScroll = new JScrollBar(JScrollBar.HORIZONTAL);
+		
+		BoundedRangeModel brm1 = queue.getHorizontalVisibility();
+		queueScroll.setModel(brm1);
+		queueScroll.setBounds(245, 90, 375, 20);
+		dataStructPanel.add(queueScroll);
+		
+		postfixTF.setBounds(0, 420, 620, 30);
 		postfixTF.setEditable(false);
 		postfixTF.setFont(new Font("Courier New", Font.BOLD, 15));
 		postfixTF.setBorder(BorderFactory.createLineBorder(Color.CYAN));
@@ -131,8 +169,28 @@ public class Frame extends JFrame{
 		
 		BoundedRangeModel brm = postfixTF.getHorizontalVisibility();
 		scroll.setModel(brm);
-		scroll.setBounds(0, 450, 300, 20);
+		scroll.setBounds(0, 450, 620, 20);
 		dataStructPanel.add(scroll);
+		
+		pseudoArray.setFont(new Font("Courier New", Font.BOLD, 15));
+		pseudoArray.setEditable(false);
+		
+		scrollP1 = new JScrollPane(pseudoArray);
+		scrollP1.setBorder(BorderFactory.createLineBorder(Color.CYAN));
+		scrollP1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollP1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollP1.setBounds(245, 150, 180, 250);
+		dataStructPanel.add(scrollP1);
+		
+		linkedList.setFont(new Font("Courier New", Font.BOLD, 15));
+		linkedList.setEditable(false);
+		
+		scrollP2 = new JScrollPane(linkedList);
+		scrollP2.setBorder(BorderFactory.createLineBorder(Color.CYAN));
+		scrollP2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollP2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollP2.setBounds(440, 150, 180, 250);
+		dataStructPanel.add(scrollP2);
 		
 		buttonsPanel.setLayout(new GridLayout(5, 4, 5, 5));
 		buttonsPanel.setBounds(7, 130, 300, 330);
@@ -378,16 +436,20 @@ public class Frame extends JFrame{
 								stack.push(character);
 								
 								postfixItem[index].setText(String.valueOf(stack.displayItemAt(stack.size() - 1)));
-								//pushColor(index, stack);
+								queue.setText(stack.displayQueue());
+								pseudoArray.setText(stack.displayPseudoArray());
+								linkedList.setText(stack.displayLinkedList());
 								index--;
 								Thread.sleep(500);
 							}
 							else if(character == ')') {
 								while(!stack.isEmpty()) {
-									//popColor(index, stack);
 									char top = stack.pop();
 									
 									postfixItem[index + 1].setText(null);
+									queue.setText(stack.displayQueue());
+									pseudoArray.setText(stack.displayPseudoArray());
+									linkedList.setText(stack.displayLinkedList());
 									index++;
 									Thread.sleep(500);
 									
@@ -406,10 +468,12 @@ public class Frame extends JFrame{
 								Thread.sleep(500);
 								
 								while(!stack.isEmpty()) {
-									//popColor(index, stack);
 									char top = stack.pop();
 									
 									postfixItem[index + 1].setText(null);
+									queue.setText(stack.displayQueue());
+									pseudoArray.setText(stack.displayPseudoArray());
+									linkedList.setText(stack.displayLinkedList());
 									index++;
 									Thread.sleep(500);
 									
@@ -417,7 +481,9 @@ public class Frame extends JFrame{
 										stack.push(top);
 
 										postfixItem[index].setText(String.valueOf(stack.displayItemAt(stack.size() - 1)));
-										//pushColor(index, stack);
+										queue.setText(stack.displayQueue());
+										pseudoArray.setText(stack.displayPseudoArray());
+										linkedList.setText(stack.displayLinkedList());
 										index--;
 										Thread.sleep(500);
 										
@@ -427,7 +493,9 @@ public class Frame extends JFrame{
 											stack.push(top);
 											
 											postfixItem[index].setText(String.valueOf(stack.displayItemAt(stack.size() - 1)));
-											//pushColor(index, stack);
+											queue.setText(stack.displayQueue());
+											pseudoArray.setText(stack.displayPseudoArray());
+											linkedList.setText(stack.displayLinkedList());
 											index--;
 											Thread.sleep(500);
 											break;
@@ -442,7 +510,9 @@ public class Frame extends JFrame{
 								stack.push(character);
 								
 								postfixItem[index].setText(String.valueOf(stack.displayItemAt(stack.size() - 1)));
-								//pushColor(index, stack);
+								queue.setText(stack.displayQueue());
+								pseudoArray.setText(stack.displayPseudoArray());
+								linkedList.setText(stack.displayLinkedList());
 								index--;
 								Thread.sleep(500);
 							}
@@ -453,13 +523,15 @@ public class Frame extends JFrame{
 					Thread.sleep(500);
 					
 					while(!stack.isEmpty()) {
-						//popColor(index, stack);
 						output = output + ' ' + stack.pop();
 						
 						postfixTF.setText(output);
 						Thread.sleep(500);
 						
 						postfixItem[index + 1].setText(null);
+						queue.setText(stack.displayQueue());
+						pseudoArray.setText(stack.displayPseudoArray());
+						linkedList.setText(stack.displayLinkedList());
 						index++;
 						Thread.sleep(500);
 					}
@@ -467,12 +539,7 @@ public class Frame extends JFrame{
 					
 					String result = evaluatePostfix(output);
 					
-					if(Double.parseDouble(result) >= -9999999.999999999 && Double.parseDouble(result) <= 9999999.99999999) {
-						outputTF.setText(result);
-					}
-					else {
-						outputTF.setText("Unsupported Output");
-					}
+					outputTF.setText(result);
 					
 					proceed = true;
 					inputTF.setEditable(true);
@@ -485,37 +552,7 @@ public class Frame extends JFrame{
 		};
 		thread.start();
 	}
-	/*
-	public void pushColor(int index, Stack<Character> stack) {
-		if(stack.size() == 1) {
-			postfixItem[stack.size() - 1].setForeground(new Color(255, 0, 0));
-		}
-		else if(stack.size() == 2) {
-			postfixItem[index].setForeground(new Color(255, 0, 0));
-			postfixItem[stack.size() - 1].setForeground(new Color(0, 0, 255));
-		}
-		else {
-			postfixItem[index].setForeground(new Color(255, 0, 0));
-			postfixItem[index + 1].setForeground(null);
-			postfixItem[stack.size() - 1].setForeground(new Color(0, 0, 255));
-		}
-	}
 	
-	public void popColor(int index, Stack<Character> stack) {
-		if(stack.size() == 1) {
-			postfixItem[stack.size() - 1].setBackground(new Color(0, 0, 0));
-		}
-		else if(stack.size() == 2) {
-			postfixItem[index].setBackground(new Color(0, 0, 0));
-			postfixItem[stack.size() - 1].setBackground(new Color(255, 0, 0));
-		}
-		else {
-			postfixItem[index].setBackground(null);
-			postfixItem[index + 1].setBackground(new Color(255, 0, 0));
-			postfixItem[stack.size() - 1].setBackground(new Color(0, 0, 255));
-		}
-	}
-	*/
 	public String evaluatePostfix(String postfix) {
 		
 		String answer = "";
@@ -636,7 +673,6 @@ public class Frame extends JFrame{
 				}
 				
 				event.consume();
-				//do the math
 				
 			} else {
 				if(inputTF.getText().length() < 100) {

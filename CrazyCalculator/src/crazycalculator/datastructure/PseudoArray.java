@@ -34,4 +34,18 @@ public class PseudoArray<T> {
 			linkedList.add(data);
 		}
 	}
+	
+	public String displayContents() {
+		String contents = "";
+		
+		for(int a = 0; a < size; a++) {
+			contents = contents + "[ " + a + " ]\t= " + linkedList.get(a) + "\n";
+		}
+		
+		return contents;
+	}
+	
+	public String displayLinkedList() {
+		return linkedList.displayContents();
+	}
 }
