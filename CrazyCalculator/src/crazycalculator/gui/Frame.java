@@ -38,21 +38,20 @@ public class Frame extends JFrame{
 	
 	public final JTextField postfixTF = new JTextField(100);
 	
-	private JPanel postfixPanel1 = new JPanel(new GridLayout(20, 1));
-	private JPanel postfixPanel2 = new JPanel(new GridLayout(20, 1));
-	private JPanel postfixPanel3 = new JPanel(new GridLayout(20, 1));
-	
-	public JLabel[] postfixItem = new JLabel[60];
+	public final JTextField parseTF = new JTextField(10);
 	
 	private JLabel queueL = new JLabel("Queue");
 	private JLabel pseudoArrayL = new JLabel("Pseudo Array");
 	private JLabel linkedListL = new JLabel("Linked List");
+	private JLabel parseL = new JLabel("Parse");
 	
 	public JTextField queue = new JTextField();
 	public JTextArea pseudoArray = new JTextArea();
 	private JScrollPane scrollP1;
 	public JTextArea linkedList = new JTextArea();
 	private JScrollPane scrollP2;
+	public JTextArea stackT = new JTextArea();
+	private JScrollPane scrollP3;
 	
 	public Frame() {
 		super("Crazy Calculator");
@@ -76,7 +75,7 @@ public class Frame extends JFrame{
 		calculatorPanel.add(textPanel);
 
 		setLayout(null);
-		setSize(960,520);
+		setSize(895,520);
 		setVisible(true);
 		setResizable(false);
 		setLocationRelativeTo(null);
@@ -86,57 +85,48 @@ public class Frame extends JFrame{
 	public void setComponents() {
 		calculatorPanel.setBounds(0, 0, 320, 520);
 		calculatorPanel.setLayout(null);
-		dataStructPanel.setBounds(320, 0, 640, 520);
+		dataStructPanel.setBounds(320, 0, 575, 520);
 		dataStructPanel.setLayout(null);
 		
-		header.setBounds(0, 0, 640, 25);
+		header.setBounds(0, 0, 575, 25);
 		header.setFont(new Font("Courier New", Font.BOLD, 20));
 		dataStructPanel.add(header);
 		
-		postfixPanel1.setBounds(0, 60, 75, 340);
-		postfixPanel2.setBounds(80, 60, 75, 340);
-		postfixPanel3.setBounds(160, 60, 75, 340);
-		dataStructPanel.add(postfixPanel1);
-		dataStructPanel.add(postfixPanel2);
-		dataStructPanel.add(postfixPanel3);
+		stackT.setFont(new Font("Courier New", Font.BOLD, 15));
+		stackT.setEditable(false);
 		
-		for(int a = 0; a < postfixItem.length; a++) {
-			postfixItem[a] = new JLabel("" ,SwingConstants.CENTER);
-			postfixItem[a].setFont(new Font("Courier New", Font.BOLD, 15));
-			postfixItem[a].setBorder(BorderFactory.createLineBorder(Color.CYAN));
-			
-			if(a >= 0 && a < 20) {
-				postfixPanel1.add(postfixItem[a]);
-			}
-			else if(a >= 20 && a < 40) {
-				postfixPanel2.add(postfixItem[a]);
-			}
-			else {
-				postfixPanel3.add(postfixItem[a]);
-			}
-		}
+		scrollP3 = new JScrollPane(stackT);
+		scrollP3.setBorder(BorderFactory.createLineBorder(Color.CYAN));
+		scrollP3.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollP3.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollP3.setBounds(0, 150, 180, 250);
+		dataStructPanel.add(scrollP3);
 		
 		postfixL.setBounds(0, 400, 70, 20);
 		postfixL.setFont(new Font("Courier New", Font.BOLD, 15));
 		dataStructPanel.add(postfixL);
 		
-		stackL.setBounds(0, 30, 75, 20);
+		stackL.setBounds(0, 120, 180, 20);
 		stackL.setFont(new Font("Courier New", Font.BOLD, 15));
 		dataStructPanel.add(stackL);
 		
-		queueL.setBounds(245, 30, 75, 20);
+		queueL.setBounds(190, 30, 75, 20);
 		queueL.setFont(new Font("Courier New", Font.BOLD, 15));
 		dataStructPanel.add(queueL);
 		
-		pseudoArrayL.setBounds(245, 120, 180, 20);
+		parseL.setBounds(0, 30, 75, 20);
+		parseL.setFont(new Font("Courier New", Font.BOLD, 15));
+		dataStructPanel.add(parseL);
+		
+		pseudoArrayL.setBounds(190, 120, 180, 20);
 		pseudoArrayL.setFont(new Font("Courier New", Font.BOLD, 15));
 		dataStructPanel.add(pseudoArrayL);
 		
-		linkedListL.setBounds(440, 120, 180, 20);
+		linkedListL.setBounds(380, 120, 180, 20);
 		linkedListL.setFont(new Font("Courier New", Font.BOLD, 15));
 		dataStructPanel.add(linkedListL);
 		
-		queue.setBounds(245 , 60, 375, 30);
+		queue.setBounds(190 , 60, 370, 30);
 		queue.setEditable(false);
 		queue.setBorder(BorderFactory.createLineBorder(Color.CYAN));
 		queue.setFont(new Font("Courier New", Font.BOLD, 15));
@@ -148,10 +138,16 @@ public class Frame extends JFrame{
 		
 		BoundedRangeModel brm1 = queue.getHorizontalVisibility();
 		queueScroll.setModel(brm1);
-		queueScroll.setBounds(245, 90, 375, 20);
+		queueScroll.setBounds(190, 90, 370, 20);
 		dataStructPanel.add(queueScroll);
 		
-		postfixTF.setBounds(0, 420, 620, 30);
+		parseTF.setBounds(0, 60, 180, 50);
+		parseTF.setEditable(false);
+		parseTF.setBorder(BorderFactory.createLineBorder(Color.CYAN));
+		parseTF.setFont(new Font("Courier New", Font.BOLD, 30));
+		dataStructPanel.add(parseTF);
+		
+		postfixTF.setBounds(0, 420, 560, 30);
 		postfixTF.setEditable(false);
 		postfixTF.setFont(new Font("Courier New", Font.BOLD, 15));
 		postfixTF.setBorder(BorderFactory.createLineBorder(Color.CYAN));
@@ -159,7 +155,7 @@ public class Frame extends JFrame{
 		
 		BoundedRangeModel brm = postfixTF.getHorizontalVisibility();
 		scroll.setModel(brm);
-		scroll.setBounds(0, 450, 620, 20);
+		scroll.setBounds(0, 450, 560, 20);
 		dataStructPanel.add(scroll);
 		
 		pseudoArray.setFont(new Font("Courier New", Font.BOLD, 15));
@@ -169,7 +165,7 @@ public class Frame extends JFrame{
 		scrollP1.setBorder(BorderFactory.createLineBorder(Color.CYAN));
 		scrollP1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollP1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollP1.setBounds(245, 150, 180, 250);
+		scrollP1.setBounds(190, 150, 180, 250);
 		dataStructPanel.add(scrollP1);
 		
 		linkedList.setFont(new Font("Courier New", Font.BOLD, 15));
@@ -179,7 +175,7 @@ public class Frame extends JFrame{
 		scrollP2.setBorder(BorderFactory.createLineBorder(Color.CYAN));
 		scrollP2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollP2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollP2.setBounds(440, 150, 180, 250);
+		scrollP2.setBounds(380, 150, 180, 250);
 		dataStructPanel.add(scrollP2);
 		
 		buttonsPanel.setLayout(new GridLayout(5, 4, 5, 5));

@@ -77,8 +77,14 @@ public class Stack<T> {
 		return data;
 	}
 	
-	public T displayItemAt(int index) {
-		return queue.displayItemAt(index);
+	public String displayContents() {
+		String contents = "";
+		
+		for(int a = size() - 1; a >= 0; a--) {
+			contents = contents + "\t" + queue.displayItemAt(a) + "\n";
+		}
+		
+		return contents;
 	}
 	
 	public String displayQueue() {

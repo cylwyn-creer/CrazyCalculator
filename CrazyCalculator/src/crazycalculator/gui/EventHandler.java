@@ -19,6 +19,12 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 	private boolean proceed;
 	private static final long serialVersionUID = 42L;
 	
+	private int numOperand = 0;
+	private int numOperator = 0;
+	private int numDecimal = 0;
+	private int numClosePar = 0;
+	private int numOpenPar = 0;
+	
 	public EventHandler() {
 		
 		proceed = true;
@@ -246,12 +252,6 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 	public boolean checkSyntax(String infix) {
 		
 		boolean isCorrect = false;
-		int numOperand = 0;
-		int numOperator = 0;
-		int numDecimal = 0;
-		int numClosePar = 0;
-		int numOpenPar = 0;
-		//Stack< String > parenthesis = new Stack< String >(infix.length());
 		
 		infix = addSeparator(infix);
 		
@@ -275,7 +275,6 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 				
 				System.out.println(character + "is an open paren");
 				numOpenPar++;
-				//parenthesis.push(character);
 				
 			} else
 			if(character.equals(")")) {
@@ -283,15 +282,6 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 				numClosePar++;
 				
 				System.out.println(character + "is an close paren");
-				/*if(!parenthesis.isEmpty()) {
-					
-					parenthesis.pop();
-					
-				} else {
-					
-					return false;
-					
-				}*/
 				
 			} else {
 				
@@ -382,43 +372,57 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 	}
 	
 	public void compute(String infix) {
-		Stack< Character > stack = new Stack< Character >(infix.length());
+		Stack< Character > stack = new Stack< Character >(numOperator + numOpenPar + numClosePar);
+		
+		numOperand = numOperator = numDecimal = numClosePar = numOpenPar = 0;
 		
 		Thread thread = new Thread()
 		{
 			private String output = "";
+			private String parsedString = "";
 			
 			public void run() {
 				try {
-					int index = postfixItem.length - 1;
 					for(int a = 0; a < infix.length(); a++) {
 						char character = infix.charAt(a);
 						if(Character.isDigit(character)) {
 							output = output + character;
-						} else {
+							parsedString = parsedString + character;
+						} else {	
 							if(character == '.') {
 								output = output + character;
+								parsedString = parsedString + character;
 								continue;
 							}
 							if(character == '(') {
-								stack.push(character);
+								parseTF.setText("(");
+								Thread.sleep(500);
 								
-								postfixItem[index].setText(String.valueOf(stack.displayItemAt(stack.size() - 1)));
+								stack.push(character);
+
+								stackT.setText(stack.displayContents());
 								queue.setText(stack.displayQueue());
 								pseudoArray.setText(stack.displayPseudoArray());
 								linkedList.setText(stack.displayLinkedList());
-								index--;
 								Thread.sleep(500);
 							}
 							else if(character == ')') {
+								parseTF.setText(parsedString);
+								parsedString = "";
+								
+								postfixTF.setText(output);
+								Thread.sleep(500);
+								
+								parseTF.setText(")");
+								Thread.sleep(500);
+								
 								while(!stack.isEmpty()) {
 									char top = stack.pop();
-									
-									postfixItem[index + 1].setText(null);
+
+									stackT.setText(stack.displayContents());
 									queue.setText(stack.displayQueue());
 									pseudoArray.setText(stack.displayPseudoArray());
 									linkedList.setText(stack.displayLinkedList());
-									index++;
 									Thread.sleep(500);
 									
 									if(top != '(') {
@@ -431,28 +435,31 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 									}
 								}
 							} else {
+								parseTF.setText(parsedString);
+								parsedString = "";
 								output = output + ' ';
 								postfixTF.setText(output);
+								Thread.sleep(500);
+								
+								parseTF.setText(String.valueOf(character));
 								Thread.sleep(500);
 								
 								while(!stack.isEmpty()) {
 									char top = stack.pop();
 									
-									postfixItem[index + 1].setText(null);
+									stackT.setText(stack.displayContents());
 									queue.setText(stack.displayQueue());
 									pseudoArray.setText(stack.displayPseudoArray());
 									linkedList.setText(stack.displayLinkedList());
-									index++;
 									Thread.sleep(500);
 									
 									if(top == '(') {
 										stack.push(top);
 
-										postfixItem[index].setText(String.valueOf(stack.displayItemAt(stack.size() - 1)));
+										stackT.setText(stack.displayContents());
 										queue.setText(stack.displayQueue());
 										pseudoArray.setText(stack.displayPseudoArray());
 										linkedList.setText(stack.displayLinkedList());
-										index--;
 										Thread.sleep(500);
 										
 										break;
@@ -460,11 +467,10 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 										if(checkPrecedence(top) < checkPrecedence(character)) {
 											stack.push(top);
 											
-											postfixItem[index].setText(String.valueOf(stack.displayItemAt(stack.size() - 1)));
+											stackT.setText(stack.displayContents());
 											queue.setText(stack.displayQueue());
 											pseudoArray.setText(stack.displayPseudoArray());
 											linkedList.setText(stack.displayLinkedList());
-											index--;
 											Thread.sleep(500);
 											break;
 											
@@ -477,18 +483,21 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 								}
 								stack.push(character);
 								
-								postfixItem[index].setText(String.valueOf(stack.displayItemAt(stack.size() - 1)));
+								stackT.setText(stack.displayContents());
 								queue.setText(stack.displayQueue());
 								pseudoArray.setText(stack.displayPseudoArray());
 								linkedList.setText(stack.displayLinkedList());
-								index--;
 								Thread.sleep(500);
 							}
 						}
 					}
 					
+					parseTF.setText(parsedString);
+					
 					postfixTF.setText(output);
 					Thread.sleep(500);
+					
+					parseTF.setText("END");
 					
 					while(!stack.isEmpty()) {
 						output = output + ' ' + stack.pop();
@@ -496,11 +505,10 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 						postfixTF.setText(output);
 						Thread.sleep(500);
 						
-						postfixItem[index + 1].setText(null);
+						stackT.setText(stack.displayContents());
 						queue.setText(stack.displayQueue());
 						pseudoArray.setText(stack.displayPseudoArray());
 						linkedList.setText(stack.displayLinkedList());
-						index++;
 						Thread.sleep(500);
 					}
 					System.out.println(output);
