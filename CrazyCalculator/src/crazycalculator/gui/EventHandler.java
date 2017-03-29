@@ -368,12 +368,8 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 		
 		Stack< Character > stack = new Stack< Character >(numOperator + numOpenPar + numClosePar);
 		
-		String indent = createIndent();
-		int length = indent.length();
-		
 		System.out.println("Converting to Postfix Notation");
-		System.out.println("READ" + indent.substring(0, length-"READ".length()) + "PARSED" + indent.substring(0, length-"PARSED".length()) +
-				"WRITTEN" + indent.substring(0, length-"WRITTEN".length()) + "STACK" + indent.substring(0, length-"STACK".length()));
+		System.out.printf("%10s %20s %40s %20s \n", "READ", "PARSED", "WRITTEN", "STACK");
 		
 		Thread thread = new Thread()
 		{
@@ -403,8 +399,7 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 								stack.push(character);
 								parsedString = parsedString + "(";
 								writtenString = output.trim();
-								System.out.println("(" + indent.substring(0, length - 1) + parsedString + indent.substring(0, length - parsedString.length()) +
-										writtenString + indent.substring(0, length - writtenString.length()) + stack.getStackString() + indent.substring(0, length - stack.getStackString().length()));
+								System.out.printf("%10s %20s %40s %20s \n", "(", parsedString, writtenString, stack.getStackString());
 								
 								stackT.setText(stack.displayContents());
 								queue.setText(stack.displayQueue());
@@ -417,8 +412,7 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 									parseTF.setText(readString);
 									parsedString = parsedString + readString;
 									writtenString = output.trim();
-									System.out.println(readString + indent.substring(0, length - readString.length()) + parsedString + indent.substring(0, length - parsedString.length()) +
-											writtenString + indent.substring(0, length - writtenString.length()) + stack.getStackString() + indent.substring(0, length - stack.getStackString().length()));
+									System.out.printf("%10s %20s %40s %20s \n", readString, parsedString, writtenString, stack.getStackString());
 									readString = "";
 								}
 								
@@ -448,16 +442,14 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 								
 								parsedString = parsedString + ")";
 								writtenString = output.trim();
-								System.out.println(")" + indent.substring(0, length - 1) + parsedString + indent.substring(0, length - parsedString.length()) +
-										writtenString + indent.substring(0, length - writtenString.length()) + stack.getStackString() + indent.substring(0, length - stack.getStackString().length()));
+								System.out.printf("%10s %20s %40s %20s \n", ")", parsedString, writtenString, stack.getStackString());
 								Thread.sleep(500);
 							} else {
 								if(!readString.equals("")) {
 									parseTF.setText(readString);
 									parsedString = parsedString + readString;
 									writtenString = output.trim();
-									System.out.println(readString + indent.substring(0, length - readString.length()) + parsedString + indent.substring(0, length - parsedString.length()) +
-											writtenString + indent.substring(0, length - writtenString.length()) + stack.getStackString() + indent.substring(0, length - stack.getStackString().length()));
+									System.out.printf("%10s %20s %40s %20s \n", readString, parsedString, writtenString, stack.getStackString());
 									readString = "";
 								}
 								output = output + ' ';
@@ -507,8 +499,7 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 									}
 								}
 								stack.push(character);
-								System.out.println(String.valueOf(character) + indent.substring(0, length - 1) + parsedString + indent.substring(0, length - parsedString.length()) +
-										writtenString + indent.substring(0, length - writtenString.length()) + stack.getStackString() + indent.substring(0, length - stack.getStackString().length()));
+								System.out.printf("%10s %20s %40s %20s \n", String.valueOf(character), parsedString, writtenString, stack.getStackString());
 								
 								stackT.setText(stack.displayContents());
 								queue.setText(stack.displayQueue());
@@ -523,8 +514,7 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 						parseTF.setText(readString);
 						parsedString = parsedString + readString;
 						writtenString = output.trim();
-						System.out.println(readString + indent.substring(0, length - readString.length()) + parsedString + indent.substring(0, length - parsedString.length()) +
-								writtenString + indent.substring(0, length - writtenString.length()) + stack.getStackString() + indent.substring(0, length - stack.getStackString().length()));
+						System.out.printf("%10s %20s %40s %20s \n", readString, parsedString, writtenString, stack.getStackString());
 					}
 						
 					postfixTF.setText(output);
@@ -532,15 +522,13 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 					
 					parseTF.setText("END");
 					writtenString = output.trim();
-					System.out.println("END" + indent.substring(0, length - "END".length()) + parsedString + indent.substring(0, length - parsedString.length()) +
-							writtenString + indent.substring(0, length - writtenString.length()) + stack.getStackString() + indent.substring(0, length - stack.getStackString().length()));
+					System.out.printf("%10s %20s %40s %20s \n", "END", parsedString, writtenString, stack.getStackString());
 					
 					while(!stack.isEmpty()) {
 						output = output + ' ' + stack.pop();
 						
 						writtenString = output.trim();
-						System.out.println("END" + indent.substring(0, length - "END".length()) + parsedString + indent.substring(0, length - parsedString.length()) +
-								writtenString + indent.substring(0, length - writtenString.length()) + stack.getStackString() + indent.substring(0, length - stack.getStackString().length()));
+						System.out.printf("%10s %20s %40s %20s \n", "", parsedString, writtenString, stack.getStackString());
 						
 						postfixTF.setText(output);
 						Thread.sleep(500);
@@ -606,7 +594,7 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 			
 					String top = expression.pop();
 					
-					parsed = parsed + " " + top;
+					parsed = parsed + top;
 					
 					System.out.print(top + indent.substring(0, length - top.length()) + parsed + indent.substring(0, length - parsed.length()));
 			
