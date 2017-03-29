@@ -227,6 +227,7 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 			input = inputTF.getText();
 			inputSize = input.length();
 			
+			numOperand = numOperator = numDecimal = numClosePar = numOpenPar = 0;
 			correct = checkSyntax(input);
 			
 			postfix = "";
@@ -361,170 +362,18 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 		return newInput;
 		
 	}
-	/*
-	public void compute(String infix) {
-		header.setText("Converting to Postfix Notation");
-		
-		Stack< Character > stack = new Stack< Character >(numOperator + numOpenPar + numClosePar);
-		
-		numOperand = numOperator = numDecimal = numClosePar = numOpenPar = 0;
-		
-		Thread thread = new Thread()
-		{
-			private String output = "";
-			private String readString = "";
-			
-			public void run() {
-				try {
-					for(int a = 0; a < infix.length(); a++) {
-						char character = infix.charAt(a);
-						if(Character.isDigit(character)) {
-							output = output + character;
-							readString = readString + character;
-						} else {	
-							if(character == '.') {
-								output = output + character;
-								readString = readString + character;
-								continue;
-							}
-							if(character == '(') {
-								parseTF.setText("(");
-								Thread.sleep(500);
-								
-								stack.push(character);
-
-								stackT.setText(stack.displayContents());
-								queue.setText(stack.displayQueue());
-								pseudoArray.setText(stack.displayPseudoArray());
-								linkedList.setText(stack.displayLinkedList());
-								Thread.sleep(500);
-							}
-							else if(character == ')') {
-								parseTF.setText(readString);
-								readString = "";
-								
-								postfixTF.setText(output);
-								Thread.sleep(500);
-								
-								parseTF.setText(")");
-								Thread.sleep(500);
-								
-								while(!stack.isEmpty()) {
-									char top = stack.pop();
-
-									stackT.setText(stack.displayContents());
-									queue.setText(stack.displayQueue());
-									pseudoArray.setText(stack.displayPseudoArray());
-									linkedList.setText(stack.displayLinkedList());
-									Thread.sleep(500);
-									
-									if(top != '(') {
-										output = output + ' ' + top;
-										
-										postfixTF.setText(output);
-										Thread.sleep(500);
-									} else {
-										break;
-									}
-								}
-							} else {
-								parseTF.setText(readString);
-								readString = "";
-								output = output + ' ';
-								postfixTF.setText(output);
-								Thread.sleep(500);
-								
-								parseTF.setText(String.valueOf(character));
-								Thread.sleep(500);
-								
-								while(!stack.isEmpty()) {
-									char top = stack.pop();
-									
-									stackT.setText(stack.displayContents());
-									queue.setText(stack.displayQueue());
-									pseudoArray.setText(stack.displayPseudoArray());
-									linkedList.setText(stack.displayLinkedList());
-									Thread.sleep(500);
-									
-									if(top == '(') {
-										stack.push(top);
-
-										stackT.setText(stack.displayContents());
-										queue.setText(stack.displayQueue());
-										pseudoArray.setText(stack.displayPseudoArray());
-										linkedList.setText(stack.displayLinkedList());
-										Thread.sleep(500);
-										
-										break;
-									} else {
-										if(checkPrecedence(top) < checkPrecedence(character)) {
-											stack.push(top);
-											
-											stackT.setText(stack.displayContents());
-											queue.setText(stack.displayQueue());
-											pseudoArray.setText(stack.displayPseudoArray());
-											linkedList.setText(stack.displayLinkedList());
-											Thread.sleep(500);
-											break;
-											
-										} else {
-											output = output + top + ' ';
-											postfixTF.setText(output);
-											Thread.sleep(500);
-										}
-									}
-								}
-								stack.push(character);
-								
-								stackT.setText(stack.displayContents());
-								queue.setText(stack.displayQueue());
-								pseudoArray.setText(stack.displayPseudoArray());
-								linkedList.setText(stack.displayLinkedList());
-								Thread.sleep(500);
-							}
-						}
-					}
-					
-					parseTF.setText(readString);
-					
-					postfixTF.setText(output);
-					Thread.sleep(500);
-					
-					parseTF.setText("END");
-					
-					while(!stack.isEmpty()) {
-						output = output + ' ' + stack.pop();
-						
-						postfixTF.setText(output);
-						Thread.sleep(500);
-						
-						stackT.setText(stack.displayContents());
-						queue.setText(stack.displayQueue());
-						pseudoArray.setText(stack.displayPseudoArray());
-						linkedList.setText(stack.displayLinkedList());
-						Thread.sleep(500);
-					}
-					System.out.println(output);
-					
-					evaluatePostfix(output);
-				}
-				catch(InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		};
-		thread.start();
-	}
-	*/
 	
 	public void compute(String infix) {
 		header.setText("Converting to Postfix Notation");
 		
 		Stack< Character > stack = new Stack< Character >(numOperator + numOpenPar + numClosePar);
 		
-		numOperand = numOperator = numDecimal = numClosePar = numOpenPar = 0;
+		String indent = createIndent();
+		int length = indent.length();
 		
-		System.out.printf("%10s %20s %40s %20s \n", "READ", "PARSED", "WRITTEN", "STACK");
+		System.out.println("Converting to Postfix Notation");
+		System.out.println("READ" + indent.substring(0, length-"READ".length()) + "PARSED" + indent.substring(0, length-"PARSED".length()) +
+				"WRITTEN" + indent.substring(0, length-"WRITTEN".length()) + "STACK" + indent.substring(0, length-"STACK".length()));
 		
 		Thread thread = new Thread()
 		{
@@ -554,7 +403,8 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 								stack.push(character);
 								parsedString = parsedString + "(";
 								writtenString = output.trim();
-								System.out.printf("%10s %20s %40s %20s \n", "(", parsedString, writtenString, stack.getStackString());
+								System.out.println("(" + indent.substring(0, length - 1) + parsedString + indent.substring(0, length - parsedString.length()) +
+										writtenString + indent.substring(0, length - writtenString.length()) + stack.getStackString() + indent.substring(0, length - stack.getStackString().length()));
 								
 								stackT.setText(stack.displayContents());
 								queue.setText(stack.displayQueue());
@@ -567,7 +417,8 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 									parseTF.setText(readString);
 									parsedString = parsedString + readString;
 									writtenString = output.trim();
-									System.out.printf("%10s %20s %40s %20s \n", readString, parsedString, writtenString, stack.getStackString());
+									System.out.println(readString + indent.substring(0, length - readString.length()) + parsedString + indent.substring(0, length - parsedString.length()) +
+											writtenString + indent.substring(0, length - writtenString.length()) + stack.getStackString() + indent.substring(0, length - stack.getStackString().length()));
 									readString = "";
 								}
 								
@@ -597,14 +448,16 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 								
 								parsedString = parsedString + ")";
 								writtenString = output.trim();
-								System.out.printf("%10s %20s %40s %20s \n", ")", parsedString, writtenString, stack.getStackString());
+								System.out.println(")" + indent.substring(0, length - 1) + parsedString + indent.substring(0, length - parsedString.length()) +
+										writtenString + indent.substring(0, length - writtenString.length()) + stack.getStackString() + indent.substring(0, length - stack.getStackString().length()));
 								Thread.sleep(500);
 							} else {
 								if(!readString.equals("")) {
 									parseTF.setText(readString);
 									parsedString = parsedString + readString;
 									writtenString = output.trim();
-									System.out.printf("%10s %20s %40s %20s \n", readString, parsedString, writtenString, stack.getStackString());
+									System.out.println(readString + indent.substring(0, length - readString.length()) + parsedString + indent.substring(0, length - parsedString.length()) +
+											writtenString + indent.substring(0, length - writtenString.length()) + stack.getStackString() + indent.substring(0, length - stack.getStackString().length()));
 									readString = "";
 								}
 								output = output + ' ';
@@ -654,7 +507,8 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 									}
 								}
 								stack.push(character);
-								System.out.printf("%10s %20s %40s %20s \n", String.valueOf(character), parsedString, writtenString, stack.getStackString());
+								System.out.println(String.valueOf(character) + indent.substring(0, length - 1) + parsedString + indent.substring(0, length - parsedString.length()) +
+										writtenString + indent.substring(0, length - writtenString.length()) + stack.getStackString() + indent.substring(0, length - stack.getStackString().length()));
 								
 								stackT.setText(stack.displayContents());
 								queue.setText(stack.displayQueue());
@@ -669,7 +523,8 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 						parseTF.setText(readString);
 						parsedString = parsedString + readString;
 						writtenString = output.trim();
-						System.out.printf("%10s %20s %40s %20s \n", readString, parsedString, writtenString, stack.getStackString());
+						System.out.println(readString + indent.substring(0, length - readString.length()) + parsedString + indent.substring(0, length - parsedString.length()) +
+								writtenString + indent.substring(0, length - writtenString.length()) + stack.getStackString() + indent.substring(0, length - stack.getStackString().length()));
 					}
 						
 					postfixTF.setText(output);
@@ -677,13 +532,15 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 					
 					parseTF.setText("END");
 					writtenString = output.trim();
-					System.out.printf("%10s %20s %40s %20s \n", "END", parsedString, writtenString, stack.getStackString());
+					System.out.println("END" + indent.substring(0, length - "END".length()) + parsedString + indent.substring(0, length - parsedString.length()) +
+							writtenString + indent.substring(0, length - writtenString.length()) + stack.getStackString() + indent.substring(0, length - stack.getStackString().length()));
 					
 					while(!stack.isEmpty()) {
 						output = output + ' ' + stack.pop();
 						
 						writtenString = output.trim();
-						System.out.printf("%10s %20s %40s %20s \n", "", parsedString, writtenString, stack.getStackString());
+						System.out.println("END" + indent.substring(0, length - "END".length()) + parsedString + indent.substring(0, length - parsedString.length()) +
+								writtenString + indent.substring(0, length - writtenString.length()) + stack.getStackString() + indent.substring(0, length - stack.getStackString().length()));
 						
 						postfixTF.setText(output);
 						Thread.sleep(500);
@@ -725,7 +582,7 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 		String indent = createIndent();
 		int length = indent.length();
 		
-		System.out.println("\nEvaluating Postfix Notation");
+		System.out.println("Evaluating Postfix Notation");
 		System.out.println("READ" + indent.substring(0, length-"READ".length()) + "PARSED" + indent.substring(0, length-"PARSED".length()) +
 				  "STACK" + indent.substring(0, length-"STACK".length()));
 		
@@ -749,7 +606,7 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 			
 					String top = expression.pop();
 					
-					parsed = parsed + top;
+					parsed = parsed + " " + top;
 					
 					System.out.print(top + indent.substring(0, length - top.length()) + parsed + indent.substring(0, length - parsed.length()));
 			
