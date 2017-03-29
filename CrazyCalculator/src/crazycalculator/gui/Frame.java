@@ -32,7 +32,7 @@ public class Frame extends JFrame{
 	public JTextField outputTF = new JTextField();
 	private String[] symbols = {"(", ")", "Del", "AC", "7", "8", "9", "+", "4", "5", "6", "-", "1", "2", "3", "*", "0", ".", "=", "/"};
 	
-	private JLabel header = new JLabel("Data Structures", SwingConstants.CENTER);
+	public JLabel header = new JLabel("Data Structures", SwingConstants.CENTER);
 	private JLabel postfixL = new JLabel("Postfix");
 	private JLabel stackL = new JLabel("Stack");
 	
@@ -43,7 +43,7 @@ public class Frame extends JFrame{
 	private JLabel queueL = new JLabel("Queue");
 	private JLabel pseudoArrayL = new JLabel("Pseudo Array");
 	private JLabel linkedListL = new JLabel("Linked List");
-	private JLabel parseL = new JLabel("Parse");
+	private JLabel parseL = new JLabel("Read");
 	
 	public JTextField queue = new JTextField();
 	public JTextArea pseudoArray = new JTextArea();
@@ -164,7 +164,7 @@ public class Frame extends JFrame{
 		scrollP1 = new JScrollPane(pseudoArray);
 		scrollP1.setBorder(BorderFactory.createLineBorder(Color.CYAN));
 		scrollP1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scrollP1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollP1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollP1.setBounds(190, 150, 180, 250);
 		dataStructPanel.add(scrollP1);
 		
@@ -174,7 +174,7 @@ public class Frame extends JFrame{
 		scrollP2 = new JScrollPane(linkedList);
 		scrollP2.setBorder(BorderFactory.createLineBorder(Color.CYAN));
 		scrollP2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scrollP2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollP2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollP2.setBounds(380, 150, 180, 250);
 		dataStructPanel.add(scrollP2);
 		

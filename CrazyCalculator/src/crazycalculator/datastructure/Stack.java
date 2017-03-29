@@ -81,7 +81,7 @@ public class Stack<T> {
 		String contents = "";
 		
 		for(int a = size() - 1; a >= 0; a--) {
-			contents = contents + "\t" + queue.displayItemAt(a) + "\n";
+			contents = contents + " " + queue.displayItemAt(a) + "\n";
 		}
 		
 		return contents;

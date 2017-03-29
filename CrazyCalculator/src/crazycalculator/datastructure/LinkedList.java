@@ -187,13 +187,14 @@ public class LinkedList<T> {
 	public String displayContents() {
 		String contents = "";
 		
-		Link<T> currentLink = firstLink;
 		int index = 0;
-		while(currentLink.getData() != null) {
-			contents = contents + "[ " + index + " ]\t= " + currentLink.getData() + "\n";
-			index++;
+		while(index < size()) {
+			T data = get(index);
 			
-			currentLink = currentLink.getNextLink();
+			if(data != null) {
+				contents = contents + "[ " + index + " ]\t= " + data + "\n";
+			}
+			index++;
 		}
 		
 		return contents;

@@ -372,6 +372,8 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 	}
 	
 	public void compute(String infix) {
+		header.setText("Converting to Postfix Notation");
+		
 		Stack< Character > stack = new Stack< Character >(numOperator + numOpenPar + numClosePar);
 		
 		numOperand = numOperator = numDecimal = numClosePar = numOpenPar = 0;
@@ -513,13 +515,7 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 					}
 					System.out.println(output);
 					
-					String result = evaluatePostfix(output);
-					
-					outputTF.setText(result);
-					
-					proceed = true;
-					inputTF.setEditable(true);
-					inputTF.setFocusable(true);
+					evaluatePostfix(output);
 				}
 				catch(InterruptedException e) {
 					e.printStackTrace();
@@ -543,66 +539,142 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 		
 	}
 	
-	public String evaluatePostfix(String postfix) {
+	public void evaluatePostfix(String postfix) {
+		header.setText("Evaluating Postfix Notation");
 		
-		String answer = "";
-		Stack<String> expression = new Stack<String>(postfix.length());
-		Stack<Double> temporaryAnswer = new Stack<Double>(postfix.length());
+		Thread thread = new Thread() {
+			String answer = "";
+			String[] terms = postfix.split(" ");
+			
+			Stack<String> expression = new Stack<String>(terms.length);
+			Stack<Double> temporaryAnswer = new Stack<Double>(terms.length);
+			
+			public void run() {
+				for(int a = terms.length - 1; a >= 0; a--) {
+			
+					expression.push(terms[a]);
+			
+				}
 		
-		String[] terms = postfix.split(" ");
+				while(!expression.isEmpty()) {
+			
+					String top = expression.pop();
+			
+					try {
+						
+						parseTF.setText(top);
+						Thread.sleep(500);
+						
+						temporaryAnswer.push(Double.parseDouble(top));
+						
+						stackT.setText(temporaryAnswer.displayContents());
+						queue.setText(temporaryAnswer.displayQueue());
+						pseudoArray.setText(temporaryAnswer.displayPseudoArray());
+						linkedList.setText(temporaryAnswer.displayLinkedList());
+						Thread.sleep(500);
+				
+					} catch(NumberFormatException e) {
+						try {
+							double value2 = temporaryAnswer.pop();
+						
+							stackT.setText(temporaryAnswer.displayContents());
+							queue.setText(temporaryAnswer.displayQueue());
+							pseudoArray.setText(temporaryAnswer.displayPseudoArray());
+							linkedList.setText(temporaryAnswer.displayLinkedList());
+							Thread.sleep(500);
+						
+							double value1 = temporaryAnswer.pop();
+						
+							stackT.setText(temporaryAnswer.displayContents());
+							queue.setText(temporaryAnswer.displayQueue());
+							pseudoArray.setText(temporaryAnswer.displayPseudoArray());
+							linkedList.setText(temporaryAnswer.displayLinkedList());
+							Thread.sleep(500);
+				
+							if(top.equals("+")) {
+					
+								temporaryAnswer.push(value1 + value2);
+								
+								stackT.setText(temporaryAnswer.displayContents());
+								queue.setText(temporaryAnswer.displayQueue());
+								pseudoArray.setText(temporaryAnswer.displayPseudoArray());
+								linkedList.setText(temporaryAnswer.displayLinkedList());
+								Thread.sleep(500);
+					
+							}
+							else if(top.equals("-")) {
+					
+								temporaryAnswer.push(value1 - value2);
+								
+								stackT.setText(temporaryAnswer.displayContents());
+								queue.setText(temporaryAnswer.displayQueue());
+								pseudoArray.setText(temporaryAnswer.displayPseudoArray());
+								linkedList.setText(temporaryAnswer.displayLinkedList());
+								Thread.sleep(500);
+					
+							}
+							else if(top.equals("*")) {
+					
+								temporaryAnswer.push(value1 * value2);
+								
+								stackT.setText(temporaryAnswer.displayContents());
+								queue.setText(temporaryAnswer.displayQueue());
+								pseudoArray.setText(temporaryAnswer.displayPseudoArray());
+								linkedList.setText(temporaryAnswer.displayLinkedList());
+								Thread.sleep(500);
+					
+							}
+							else {
+					
+								temporaryAnswer.push(value1 / value2);
+								
+								stackT.setText(temporaryAnswer.displayContents());
+								queue.setText(temporaryAnswer.displayQueue());
+								pseudoArray.setText(temporaryAnswer.displayPseudoArray());
+								linkedList.setText(temporaryAnswer.displayLinkedList());
+								Thread.sleep(500);
+					
+							}
+						} catch(InterruptedException ex) {
+							ex.printStackTrace();
+						}
+				
+					} catch(InterruptedException e) {
+						e.printStackTrace();
+					}
+			
+				}
 		
-		for(int a = terms.length - 1; a >= 0; a--) {
-			
-			expression.push(terms[a]);
-			
-		}
-		
-		while(!expression.isEmpty()) {
-			
-			String top = expression.pop();
-			
-			try {
 				
-				temporaryAnswer.push(Double.parseDouble(top));
+				try {
+					parseTF.setText("END");
+					Thread.sleep(500);
 				
-			} catch(NumberFormatException e) {
+					answer = String.valueOf(temporaryAnswer.pop());
 				
-				double value2 = temporaryAnswer.pop();
-				double value1 = temporaryAnswer.pop();
-				
-				if(top.equals("+")) {
-					
-					temporaryAnswer.push(value1 + value2);
-					
-				}
-				else if(top.equals("-")) {
-					
-					temporaryAnswer.push(value1 - value2);
-					
-				}
-				else if(top.equals("*")) {
-					
-					temporaryAnswer.push(value1 * value2);
-					
-				}
-				else {
-					
-					temporaryAnswer.push(value1 / value2);
-					
+					stackT.setText(temporaryAnswer.displayContents());
+					queue.setText(temporaryAnswer.displayQueue());
+					pseudoArray.setText(temporaryAnswer.displayPseudoArray());
+					linkedList.setText(temporaryAnswer.displayLinkedList());
+					Thread.sleep(500);
+				} catch(InterruptedException e) {
+					e.printStackTrace();
 				}
 				
+				
+				if(answer.equals("Infinity") || answer.equals("NaN")) {
+					answer = "Math Error";
+				}
+				
+				outputTF.setText(answer);
+				
+				proceed = true;
+				inputTF.setEditable(true);
+				inputTF.setFocusable(true);
+				
+				header.setText("Data Structures");
 			}
-			
-		}
-		
-		answer = String.valueOf(temporaryAnswer.pop());
-		
-		if(answer.equals("Infinity")) {
-			answer = "Math Error";
-		}
-		
-		return answer;
-		
+		};
+		thread.start();
 	}
-		
 }

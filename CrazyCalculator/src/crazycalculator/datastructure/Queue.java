@@ -46,12 +46,14 @@ public class Queue<T> {
 			}
 			else {
 				data = pseudoArray.get(0);
-				
-				for(int a = 0; a < size(); a++) {
-					pseudoArray.set(a, pseudoArray.get(a + 1));
+					
+				int index = 0;
+				while(index < size() - 1) {
+					pseudoArray.set(index, pseudoArray.get(index + 1));
+					index++;
 				}
 				
-				pseudoArray.set(size--, null);
+				pseudoArray.set(--size, null);
 			}
 		}
 		catch(EmptyListException e) {
@@ -101,7 +103,7 @@ public class Queue<T> {
 		String contents = " ";
 		
 		for(int a = 0; a < size; a++) {
-			contents = contents + pseudoArray.get(a) + " ";
+			contents = contents + "[" + pseudoArray.get(a) + "] ";
 		}
 		
 		return contents;
