@@ -87,6 +87,16 @@ public class Stack<T> {
 		return contents;
 	}
 	
+	public String getStackString() {
+		String stackString = "";
+		
+		for(int a = 0; a < size(); a++) {
+			stackString = stackString + queue.displayItemAt(a);
+		}
+		
+		return stackString;
+	}
+	
 	public String displayQueue() {
 		return queue.displayContents();
 	}

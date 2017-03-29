@@ -255,8 +255,6 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 		
 		infix = addSeparator(infix);
 		
-		System.out.println("Infix: " + infix);
-		
 		if(infix.charAt(0) == ' ') {
 			
 			infix = infix.substring(1, infix.length());
@@ -267,21 +265,17 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 			
 			if(character.equals("+") || character.equals("-") || character.equals("*") || character.equals("/")) {
 				
-				System.out.println(character + "is an operator");
 				numOperator++;
 				
 			} else
 			if(character.equals("(")) {
 				
-				System.out.println(character + "is an open paren");
 				numOpenPar++;
 				
 			} else
 			if(character.equals(")")) {
 				
 				numClosePar++;
-				
-				System.out.println(character + "is an close paren");
 				
 			} else {
 				
@@ -317,7 +311,6 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 					
 				} else {
 					
-					System.out.println(character + "is an operand");
 					numOperand++;
 					numDecimal = 0;
 					
@@ -328,8 +321,6 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 			
 		}
 		
-		System.out.print("number of operand: " + numOperand + " number of operator: " + numOperator);
-		System.out.println("number of open par: " + numOpenPar + "numClosePar: " + numClosePar);
 		if((numOperand == (numOperator + 1)) || (numOperand == 1 && numOperator == 0)) {
 			
 			if(numOpenPar == numClosePar)
@@ -370,7 +361,7 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 		return newInput;
 		
 	}
-	
+	/*
 	public void compute(String infix) {
 		header.setText("Converting to Postfix Notation");
 		
@@ -381,7 +372,7 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 		Thread thread = new Thread()
 		{
 			private String output = "";
-			private String parsedString = "";
+			private String readString = "";
 			
 			public void run() {
 				try {
@@ -389,11 +380,11 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 						char character = infix.charAt(a);
 						if(Character.isDigit(character)) {
 							output = output + character;
-							parsedString = parsedString + character;
+							readString = readString + character;
 						} else {	
 							if(character == '.') {
 								output = output + character;
-								parsedString = parsedString + character;
+								readString = readString + character;
 								continue;
 							}
 							if(character == '(') {
@@ -409,8 +400,8 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 								Thread.sleep(500);
 							}
 							else if(character == ')') {
-								parseTF.setText(parsedString);
-								parsedString = "";
+								parseTF.setText(readString);
+								readString = "";
 								
 								postfixTF.setText(output);
 								Thread.sleep(500);
@@ -437,8 +428,8 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 									}
 								}
 							} else {
-								parseTF.setText(parsedString);
-								parsedString = "";
+								parseTF.setText(readString);
+								readString = "";
 								output = output + ' ';
 								postfixTF.setText(output);
 								Thread.sleep(500);
@@ -494,7 +485,7 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 						}
 					}
 					
-					parseTF.setText(parsedString);
+					parseTF.setText(readString);
 					
 					postfixTF.setText(output);
 					Thread.sleep(500);
@@ -524,6 +515,195 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 		};
 		thread.start();
 	}
+	*/
+	
+	public void compute(String infix) {
+		header.setText("Converting to Postfix Notation");
+		
+		Stack< Character > stack = new Stack< Character >(numOperator + numOpenPar + numClosePar);
+		
+		numOperand = numOperator = numDecimal = numClosePar = numOpenPar = 0;
+		
+		System.out.printf("%10s %20s %40s %20s \n", "READ", "PARSED", "WRITTEN", "STACK");
+		
+		Thread thread = new Thread()
+		{
+			private String output = "";
+			private String readString = "";
+			private String parsedString = "";
+			private String writtenString = "";
+			
+			public void run() {
+				try {
+					for(int a = 0; a < infix.length(); a++) {
+						char character = infix.charAt(a);
+						if(Character.isDigit(character)) {
+							output = output + character;
+							readString = readString + character;
+						} else {	
+							if(character == '.') {
+								output = output + character;
+								readString = readString + character;
+								continue;
+							}
+							if(character == '(') {
+								parseTF.setText("(");
+								
+								Thread.sleep(500);
+								
+								stack.push(character);
+								parsedString = parsedString + "(";
+								writtenString = output.trim();
+								System.out.printf("%10s %20s %40s %20s \n", "(", parsedString, writtenString, stack.getStackString());
+								
+								stackT.setText(stack.displayContents());
+								queue.setText(stack.displayQueue());
+								pseudoArray.setText(stack.displayPseudoArray());
+								linkedList.setText(stack.displayLinkedList());
+								Thread.sleep(500);
+							}
+							else if(character == ')') {
+								if(!readString.equals("")) {
+									parseTF.setText(readString);
+									parsedString = parsedString + readString;
+									writtenString = output.trim();
+									System.out.printf("%10s %20s %40s %20s \n", readString, parsedString, writtenString, stack.getStackString());
+									readString = "";
+								}
+								
+								postfixTF.setText(output);
+								Thread.sleep(500);
+								
+								parseTF.setText(")");
+								
+								while(!stack.isEmpty()) {
+									char top = stack.pop();
+									
+									stackT.setText(stack.displayContents());
+									queue.setText(stack.displayQueue());
+									pseudoArray.setText(stack.displayPseudoArray());
+									linkedList.setText(stack.displayLinkedList());
+									Thread.sleep(500);
+									
+									if(top != '(') {
+										output = output + ' ' + top;
+										
+										postfixTF.setText(output);
+										Thread.sleep(500);
+									} else {
+										break;
+									}
+								}
+								
+								parsedString = parsedString + ")";
+								writtenString = output.trim();
+								System.out.printf("%10s %20s %40s %20s \n", ")", parsedString, writtenString, stack.getStackString());
+								Thread.sleep(500);
+							} else {
+								if(!readString.equals("")) {
+									parseTF.setText(readString);
+									parsedString = parsedString + readString;
+									writtenString = output.trim();
+									System.out.printf("%10s %20s %40s %20s \n", readString, parsedString, writtenString, stack.getStackString());
+									readString = "";
+								}
+								output = output + ' ';
+								postfixTF.setText(output);
+								Thread.sleep(500);
+								
+								parseTF.setText(String.valueOf(character));
+								parsedString = parsedString + character;
+								writtenString = output.trim();
+								Thread.sleep(500);
+								
+								while(!stack.isEmpty()) {
+									char top = stack.pop();
+									
+									stackT.setText(stack.displayContents());
+									queue.setText(stack.displayQueue());
+									pseudoArray.setText(stack.displayPseudoArray());
+									linkedList.setText(stack.displayLinkedList());
+									Thread.sleep(500);
+									
+									if(top == '(') {
+										stack.push(top);
+										
+										stackT.setText(stack.displayContents());
+										queue.setText(stack.displayQueue());
+										pseudoArray.setText(stack.displayPseudoArray());
+										linkedList.setText(stack.displayLinkedList());
+										Thread.sleep(500);
+										
+										break;
+									} else {
+										if(checkPrecedence(top) < checkPrecedence(character)) {
+											stack.push(top);
+											
+											stackT.setText(stack.displayContents());
+											queue.setText(stack.displayQueue());
+											pseudoArray.setText(stack.displayPseudoArray());
+											linkedList.setText(stack.displayLinkedList());
+											Thread.sleep(500);
+											break;
+											
+										} else {
+											output = output + top + ' ';
+											postfixTF.setText(output);
+											Thread.sleep(500);
+										}
+									}
+								}
+								stack.push(character);
+								System.out.printf("%10s %20s %40s %20s \n", String.valueOf(character), parsedString, writtenString, stack.getStackString());
+								
+								stackT.setText(stack.displayContents());
+								queue.setText(stack.displayQueue());
+								pseudoArray.setText(stack.displayPseudoArray());
+								linkedList.setText(stack.displayLinkedList());
+								Thread.sleep(500);
+							}
+						}
+					}
+					
+					if(!readString.equals("")) {
+						parseTF.setText(readString);
+						parsedString = parsedString + readString;
+						writtenString = output.trim();
+						System.out.printf("%10s %20s %40s %20s \n", readString, parsedString, writtenString, stack.getStackString());
+					}
+						
+					postfixTF.setText(output);
+					Thread.sleep(500);
+					
+					parseTF.setText("END");
+					writtenString = output.trim();
+					System.out.printf("%10s %20s %40s %20s \n", "END", parsedString, writtenString, stack.getStackString());
+					
+					while(!stack.isEmpty()) {
+						output = output + ' ' + stack.pop();
+						
+						writtenString = output.trim();
+						System.out.printf("%10s %20s %40s %20s \n", "", parsedString, writtenString, stack.getStackString());
+						
+						postfixTF.setText(output);
+						Thread.sleep(500);
+						
+						stackT.setText(stack.displayContents());
+						queue.setText(stack.displayQueue());
+						pseudoArray.setText(stack.displayPseudoArray());
+						linkedList.setText(stack.displayLinkedList());
+						Thread.sleep(500);
+					}
+					
+					evaluatePostfix(output);
+				}
+				catch(InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		thread.start();
+	}
 	
 	public int checkPrecedence(char c) {
 		
@@ -542,9 +722,18 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 	public void evaluatePostfix(String postfix) {
 		header.setText("Evaluating Postfix Notation");
 		
+		String indent = createIndent();
+		int length = indent.length();
+		
+		System.out.println("\nEvaluating Postfix Notation");
+		System.out.println("READ" + indent.substring(0, length-"READ".length()) + "PARSED" + indent.substring(0, length-"PARSED".length()) +
+				  "STACK" + indent.substring(0, length-"STACK".length()));
+		
+		
 		Thread thread = new Thread() {
 			String answer = "";
 			String[] terms = postfix.split(" ");
+			String parsed = "";
 			
 			Stack<String> expression = new Stack<String>(terms.length);
 			Stack<Double> temporaryAnswer = new Stack<Double>(terms.length);
@@ -559,6 +748,10 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 				while(!expression.isEmpty()) {
 			
 					String top = expression.pop();
+					
+					parsed = parsed + top;
+					
+					System.out.print(top + indent.substring(0, length - top.length()) + parsed + indent.substring(0, length - parsed.length()));
 			
 					try {
 						
@@ -566,6 +759,8 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 						Thread.sleep(500);
 						
 						temporaryAnswer.push(Double.parseDouble(top));
+						
+						System.out.println(temporaryAnswer.displayQueue());
 						
 						stackT.setText(temporaryAnswer.displayContents());
 						queue.setText(temporaryAnswer.displayQueue());
@@ -575,6 +770,7 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 				
 					} catch(NumberFormatException e) {
 						try {
+							
 							double value2 = temporaryAnswer.pop();
 						
 							stackT.setText(temporaryAnswer.displayContents());
@@ -595,6 +791,8 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 					
 								temporaryAnswer.push(value1 + value2);
 								
+								System.out.println(temporaryAnswer.displayQueue());
+								
 								stackT.setText(temporaryAnswer.displayContents());
 								queue.setText(temporaryAnswer.displayQueue());
 								pseudoArray.setText(temporaryAnswer.displayPseudoArray());
@@ -605,6 +803,8 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 							else if(top.equals("-")) {
 					
 								temporaryAnswer.push(value1 - value2);
+								
+								System.out.println(temporaryAnswer.displayQueue());
 								
 								stackT.setText(temporaryAnswer.displayContents());
 								queue.setText(temporaryAnswer.displayQueue());
@@ -617,6 +817,8 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 					
 								temporaryAnswer.push(value1 * value2);
 								
+								System.out.println(temporaryAnswer.displayQueue());
+								
 								stackT.setText(temporaryAnswer.displayContents());
 								queue.setText(temporaryAnswer.displayQueue());
 								pseudoArray.setText(temporaryAnswer.displayPseudoArray());
@@ -628,6 +830,8 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 					
 								temporaryAnswer.push(value1 / value2);
 								
+								System.out.println(temporaryAnswer.displayQueue());
+								
 								stackT.setText(temporaryAnswer.displayContents());
 								queue.setText(temporaryAnswer.displayQueue());
 								pseudoArray.setText(temporaryAnswer.displayPseudoArray());
@@ -635,6 +839,8 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 								Thread.sleep(500);
 					
 							}
+							
+															
 						} catch(InterruptedException ex) {
 							ex.printStackTrace();
 						}
@@ -676,5 +882,16 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 			}
 		};
 		thread.start();
+	}
+	
+	public String createIndent() {
+		
+		String spaces = "";
+		
+		for(int i = 0; i < input.length() + 7 ; i++)
+			spaces += " ";
+		
+		return spaces;
+		
 	}
 }
