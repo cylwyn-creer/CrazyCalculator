@@ -91,7 +91,7 @@ public class Stack<T> {
 		String stackString = "";
 		
 		for(int a = 0; a < size(); a++) {
-			stackString = stackString + queue.displayItemAt(a);
+			stackString = stackString + "[" + queue.displayItemAt(a) + "] ";
 		}
 		
 		return stackString;
