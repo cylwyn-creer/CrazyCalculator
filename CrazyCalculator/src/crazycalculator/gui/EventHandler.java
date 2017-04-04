@@ -222,7 +222,7 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 	
 	public void equalsEvent() {
 		
-		if(proceed) {
+		if(proceed && !inputTF.getText().equals("")) {
 			
 			input = inputTF.getText();
 			inputSize = input.length();
@@ -729,7 +729,12 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 					answer = "Math Error";
 				}
 				
-				outputTF.setText(answer);
+				if(answer.endsWith(".0")) {
+					outputTF.setText(answer.substring(0, answer.length() - 2));
+				}
+				else {
+					outputTF.setText(answer);
+				}
 				
 				proceed = true;
 				inputTF.setEditable(true);
