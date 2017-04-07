@@ -39,7 +39,7 @@ public class PseudoArray<T> {
 		String contents = "";
 		
 		for(int a = 0; a < size; a++) {
-			contents = contents + "[ " + a + " ]\t= " + linkedList.get(a) + "\n";
+			contents = contents + "[ " + a + " ] = " + linkedList.get(a) + "\n";
 		}
 		
 		return contents;

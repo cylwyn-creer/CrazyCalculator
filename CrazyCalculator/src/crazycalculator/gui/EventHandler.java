@@ -17,13 +17,13 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 	private String postfix;
 	private boolean correct;
 	private boolean proceed;
-	private static final long serialVersionUID = 42L;
 	
 	private int numOperand = 0;
 	private int numOperator = 0;
 	private int numDecimal = 0;
 	private int numClosePar = 0;
 	private int numOpenPar = 0;
+	private static final long serialVersionUID = 42L;
 	
 	public EventHandler() {
 		
@@ -52,36 +52,37 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 		
 		String button = event.getActionCommand();
 		
-		if(button == "Del") {
+		inputSize = inputTF.getText().length();
+		
+		if(proceed) {
 			
-			if(inputSize != 0) {
+			if(button == "Del") {
 				
-				input = inputTF.getText();
-				inputSize = input.length() - 1;
-				input = input.substring(0, inputSize);
-				inputTF.setText(input);
+				if(inputSize != 0) {
+		
+					inputTF.setText(inputTF.getText().substring(0, inputSize - 1));
+					
+				}
 				
+			} else 
+			if(button == "AC") {
+				
+				inputTF.setText("");
+				outputTF.setText("0");
+				
+			} else
+			if(button == "=") {
+				
+				equalsEvent();
+				
+			} else {
+				if(inputSize < 100) {
+					
+					inputTF.setText(inputTF.getText() + button);
+					
+				}
 			}
 			
-		} else 
-		if(button == "AC") {
-			
-			input = "";
-			inputTF.setText(input);
-			outputTF.setText("0");
-			inputSize = 0;
-			
-		} else
-		if(button == "=") {
-			
-			equalsEvent();
-			
-		} else {
-			if(inputSize < 100) {
-				input = inputTF.getText() + button;
-				inputTF.setText(input);
-				inputSize++;
-			}
 		}
 		
 	}
@@ -91,41 +92,37 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 		char character = event.getKeyChar();
 		
 		
-		if(!(Character.isDigit(character) || character == '.' || character == '(' || character == ')' ||
-				character == '+' || character == '-' || character == '/' || character == '*' ||
-						character == '=' || event.getKeyCode() == KeyEvent.VK_BACK_SPACE || 
-						event.getKeyCode() == KeyEvent.VK_ESCAPE)) {	
+		if(proceed) {
 			
-			event.consume();
-			
-		} else 
-		if(event.getKeyCode() == KeyEvent.VK_ESCAPE) {		//not working
-			
-			input = "";
-			inputTF.setText(input);
-			outputTF.setText("0");
-			inputSize = 0;
-			
-		} else
-		if(event.getKeyChar() == '=') {
-			
-			equalsEvent();
-			
-			event.consume();
-			
-		} else {
-			
-			if(inputTF.getText().length() < 100) {
-				
-				input = inputTF.getText();
-				inputSize = input.length();
-				
-			} else {
+			if(!(Character.isDigit(character) || character == '.' || character == '(' || character == ')' ||
+					character == '+' || character == '-' || character == '/' || character == '*' ||
+							character == '=' || event.getKeyCode() == KeyEvent.VK_BACK_SPACE)) {	
 				
 				event.consume();
 				
+			} else
+			if(event.getKeyChar() == '=') {
+				
+				equalsEvent();
+				
+				event.consume();
+				
+			} else {
+				
+				if(inputTF.getText().length() >= 100) {
+					
+					event.consume();
+					
+				} 
+				
 			}
+			
+		} else {
+			
+			event.consume();
+			
 		}
+		
 		
 	}
 	
@@ -153,8 +150,6 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 			inputB[1].setBackground(color);
 		if(code == KeyEvent.VK_BACK_SPACE)
 			inputB[2].setBackground(color);
-		if(code == KeyEvent.VK_ESCAPE)
-			inputB[3].setBackground(color);
 		if(character == '7')
 			inputB[4].setBackground(color);
 		if(character == '8')
@@ -222,12 +217,22 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 	
 	public void equalsEvent() {
 		
+		inputB[18].setBackground(new Color(150, 150, 255));
+		
+		if(inputTF.getText().equals("")) {
+			
+			outputTF.setText("0");
+			
+		}
+		
 		if(proceed && !inputTF.getText().equals("")) {
 			
 			input = inputTF.getText();
 			inputSize = input.length();
 			
 			numOperand = numOperator = numDecimal = numClosePar = numOpenPar = 0;
+			
+			
 			correct = checkSyntax(input);
 			
 			postfix = "";
@@ -243,16 +248,20 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 				
 				postfix = "Syntax error";
 				outputTF.setText(postfix);
+				inputB[18].setBackground(Color.WHITE);
 				
 			}
 			
 		}
+		
 		
 	}
 	
 	public boolean checkSyntax(String infix) {
 		
 		boolean isCorrect = false;
+		
+		String character, prev, next;
 		
 		infix = addSeparator(infix);
 		
@@ -262,7 +271,11 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 			
 		}
 		
-		for(String character : infix.split("\\s+")) {
+		String[] arrElement = infix.split("\\s+");
+		
+		for(int i = 0; i < arrElement.length; i++) {
+			
+			character = arrElement[i];
 			
 			if(character.equals("+") || character.equals("-") || character.equals("*") || character.equals("/")) {
 				
@@ -271,24 +284,72 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 			} else
 			if(character.equals("(")) {
 				
+				if(i != 0) {
+					
+					prev = arrElement[i - 1];
+					
+					if(!(prev.equals("+") || prev.equals("-") || prev.equals("*") || prev.equals("/"))) {
+						
+						return false;
+						
+					}
+					
+				}
+				
+				if(i + 1 < arrElement.length) {
+					
+					next = arrElement[i + 1];
+					
+					if(next.equals("+") || next.equals("-") || next.equals("*") || next.equals("/")) {
+						
+						return false;
+						
+					}
+					
+				}
+				
 				numOpenPar++;
 				
 			} else
 			if(character.equals(")")) {
 				
+				if(i != 0) {
+					
+					prev = arrElement[i - 1];
+					
+					if(prev.equals("+") || prev.equals("-") || prev.equals("*") || prev.equals("/")) {
+						
+						return false;
+						
+					}
+					
+				}
+				
+				if(i + 1 < arrElement.length) {
+					
+					next = arrElement[i + 1];
+					
+					if(!(next.equals("+") || next.equals("-") || next.equals("*") || next.equals("/"))) {
+						
+						return false;
+						
+					}
+					
+				}
+
 				numClosePar++;
 				
 			} else {
 				
-				for(int i = 0; i < character.length(); i++) {
+				for(int j = 0; j < character.length(); j++) {
 					
-					if(character.charAt(i) == '.') {
+					if(character.charAt(j) == '.') {
 					
 						numDecimal++;
 						
-						if((i + 1) < character.length()) {
+						if((j + 1) < character.length()) {
 							
-							if(!Character.isDigit(character.charAt(i+1))) {
+							if(!Character.isDigit(character.charAt(j+1))) {
 								
 								return false;
 								
@@ -296,7 +357,7 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 							
 						} 
 						
-						if(i == character.length() - 1) {
+						if(j == character.length() - 1) {
 							
 							return false;
 							
@@ -560,6 +621,7 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 			}
 		};
 		thread.start();
+		
 	}
 	
 	public int checkPrecedence(char c) {
@@ -744,6 +806,9 @@ public class EventHandler extends Frame implements ActionListener, KeyListener, 
 			}
 		};
 		thread.start();
+		
+		inputB[18].setBackground(Color.WHITE);
+				
 	}
 	
 	public String createIndent(String string) {

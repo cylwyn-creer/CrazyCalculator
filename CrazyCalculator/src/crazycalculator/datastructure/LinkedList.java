@@ -192,7 +192,7 @@ public class LinkedList<T> {
 			T data = get(index);
 			
 			if(data != null) {
-				contents = contents + "[ " + index + " ]\t= " + data + "\n";
+				contents = contents + "[ " + index + " ] = " + data + "\n";
 			}
 			index++;
 		}
