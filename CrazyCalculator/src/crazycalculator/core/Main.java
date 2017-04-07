@@ -9,7 +9,7 @@ public class Main {
 	
 	public Main() {
 		eventHandler = new EventHandler();
-		eventHandler.setIconImage(new ImageIcon("src/img/icon.png").getImage());
+		eventHandler.setIconImage(new ImageIcon(this.getClass().getResource("/img/icon.png")).getImage());
 	}
 	
 	public static void main(String[] args) {
